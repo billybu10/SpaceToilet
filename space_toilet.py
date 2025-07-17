@@ -24,18 +24,15 @@ loggerProvider = ConsoleLoggerProvider(ConsoleLogLevel.WARN)
 LightstreamerClient.setLoggerProvider(loggerProvider)
 
 # Establishing a new connection to Lightstreamer Server
-# lightstreamer_client = LightstreamerClient("http://localhost:8080", "DEMO")
-lightstreamer_client = LightstreamerClient("http://push.lightstreamer.com", "DEMO")
+lightstreamer_client = LightstreamerClient("http://push.lightstreamer.com", "ISSLIVE")
 lightstreamer_client.connect()
 
 # Making a new Subscription in MERGE mode
 subscription = Subscription(
     mode="MERGE",
-    items=["item1", "item2", "item3", "item4",
-           "item5", "item6", "item7", "item8",
-           "item9", "item10", "item11", "item12"],
-    fields=["stock_name", "last_price", "time", "bid", "ask"])
-subscription.setDataAdapter("QUOTE_ADAPTER")
+    items=["NODE3000005"],
+    fields=["TimeStamp", "Value"])
+#subscription.setDataAdapter("QUOTE_ADAPTER")
 
 # Adding the subscription listener to get notifications about new updates
 subscription.addListener(SubListener())

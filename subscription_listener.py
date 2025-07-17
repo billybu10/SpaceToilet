@@ -1,13 +1,9 @@
 # A class implementing the SubscriptionListener interface
 class SubListener:
   def onItemUpdate(self, update):
-    print("{stock_name:<19}: Last{last_price:>6} - Time {time:<8} - "
-          "Bid {bid:>5} - Ask {ask:>5}".format(
-            stock_name=update.getValue("stock_name"),
-            last_price=update.getValue("last_price"),
-            time=update.getValue("time"),
-            bid=update.getValue("bid"),
-            ask=update.getValue("ask")))  
+    print("{time_stamp:<24}: Value{value:>6}".format(
+            time_stamp=update.getValue("TimeStamp"),
+            value=update.getValue("Value")))  
     pass
   def onClearSnapshot(self, itemName, itemPos):
     pass
