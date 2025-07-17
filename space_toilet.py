@@ -14,36 +14,67 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import signal
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+gi.require_version('AppIndicator3', '0.1')
+from gi.repository import AppIndicator3
+
 from lightstreamer.client import *
 from subscription_listener import *
 
-def wait_for_input():
-    input("{0:-^80}\n".format("HIT CR TO UNSUBSCRIBE AND DISCONNECT FROM LIGHTSTREAMER"))
+APPINDICATOR_ID = "example-pokemon-appindicator"
 
-loggerProvider = ConsoleLoggerProvider(ConsoleLogLevel.WARN)
-LightstreamerClient.setLoggerProvider(loggerProvider)
 
-# Establishing a new connection to Lightstreamer Server
-lightstreamer_client = LightstreamerClient("http://push.lightstreamer.com", "ISSLIVE")
-lightstreamer_client.connect()
+def main():
+	loggerProvider = ConsoleLoggerProvider(ConsoleLogLevel.WARN)
+	LightstreamerClient.setLoggerProvider(loggerProvider)
+	global lightstreamer_client
+	lightstreamer_client = LightstreamerClient("http://push.lightstreamer.com", "ISSLIVE")
+	lightstreamer_client.connect()
+	global subscription
+	subscription = Subscription(
+        mode="MERGE",
+        items=["NODE3000005"],
+        fields=["TimeStamp", "Value"])
+	
 
-# Making a new Subscription in MERGE mode
-subscription = Subscription(
-    mode="MERGE",
-    items=["NODE3000005"],
-    fields=["TimeStamp", "Value"])
-#subscription.setDataAdapter("QUOTE_ADAPTER")
+	global indicator
+	indicator = AppIndicator3.Indicator.new(
+			APPINDICATOR_ID,
+			os.path.abspath("space-toilet-icon.svg"),
+			AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
+	indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+	indicator.set_menu(menu_build())
+	indicator.set_label("1%", "")
+	subscription.addListener(SubListener())
+	lightstreamer_client.subscribe(subscription)
+	Gtk.main()
+	
 
-# Adding the subscription listener to get notifications about new updates
-subscription.addListener(SubListener())
 
-# Registering the Subscription
-lightstreamer_client.subscribe(subscription)
+def menu_build():
+	"""Return a Gtk+ menu."""
+	menu = Gtk.Menu()
 
-wait_for_input()
+	item_quit = Gtk.MenuItem("Quit")
+	item_quit.connect('activate', quit)
+	menu.append(item_quit)
 
-# Unsubscribing from Lightstreamer by using the subscription as key
-lightstreamer_client.unsubscribe(subscription)
+	menu.show_all()
+	
+	return menu
 
-# Disconnecting
-lightstreamer_client.disconnect()
+def quit(source):
+	Gtk.main_quit()
+	lightstreamer_client.unsubscribe(subscription)
+	lightstreamer_client.disconnect()
+
+
+if __name__ == "__main__":
+	signal.signal(signal.SIGINT, signal.SIG_DFL)
+	main()
+
