@@ -16,6 +16,7 @@
 
 import os
 import signal
+import webbrowser
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -26,7 +27,7 @@ from gi.repository import AppIndicator3
 from lightstreamer.client import *
 from subscription_listener import *
 
-APPINDICATOR_ID = "example-pokemon-appindicator"
+APPINDICATOR_ID = "space-toilet"
 
 
 def main():
@@ -45,12 +46,12 @@ def main():
 	global indicator
 	indicator = AppIndicator3.Indicator.new(
 			APPINDICATOR_ID,
-			os.path.abspath("space-toilet-icon.svg"),
+			os.path.abspath("toilet.png"),
 			AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
 	indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
 	indicator.set_menu(menu_build())
-	indicator.set_label("1%", "")
-	subscription.addListener(SubListener())
+	#indicator.set_label("1%", "")
+	subscription.addListener(SubListener(indicator))
 	lightstreamer_client.subscribe(subscription)
 	Gtk.main()
 	
@@ -60,6 +61,10 @@ def menu_build():
 	"""Return a Gtk+ menu."""
 	menu = Gtk.Menu()
 
+	item_about = Gtk.MenuItem("About SpaceToilet")
+	item_about.connect('activate', show_about)
+	menu.append(item_about)
+
 	item_quit = Gtk.MenuItem("Quit")
 	item_quit.connect('activate', quit)
 	menu.append(item_quit)
@@ -67,6 +72,10 @@ def menu_build():
 	menu.show_all()
 	
 	return menu
+
+def show_about(source):
+	webbrowser.open('https://github.com/billybu10/SpaceToilet/blob/main/README.md')
+	
 
 def quit(source):
 	Gtk.main_quit()

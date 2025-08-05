@@ -1,9 +1,13 @@
 # A class implementing the SubscriptionListener interface
 class SubListener:
+  def __init__(self, indicator):
+    self.indicator = indicator
+
   def onItemUpdate(self, update):
     print("{time_stamp:<24}: Value{value:>6}".format(
             time_stamp=update.getValue("TimeStamp"),
-            value=update.getValue("Value")))  
+            value=update.getValue("Value"))) 
+    self.indicator.set_label("{value}%".format(value=update.getValue("Value")), "") 
     pass
   def onClearSnapshot(self, itemName, itemPos):
     pass
