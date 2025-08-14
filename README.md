@@ -36,8 +36,26 @@ Now you can run the program:
     ./space_toilet
 ```
 
+## How to build an executable
+
+To build an executable:
+
+1. Make sure sure you have all the dependencies from the previous point installed
+2. Install ```pyinstaller```
+```shell
+    pip install -U pyinstaller
+```
+3. Run 
+```shell
+    pyinstaller --onefile space_toilet.py subscription_listener.py
+```
+
+4. The executable will be in ```dist``` directory, make sure you have the ```toilet.png``` file in the same directory as the executable.
+
+
 
 ## Icon resources
 
 <a href="https://www.flaticon.com/free-icons/toilet" title="toilet icons">Toilet icons created by Freepik - Flaticon</a>
+
 <a href="https://www.flaticon.com/free-icons/universe" title="universe icons">Universe icons created by Design Circle - Flaticon</a>
