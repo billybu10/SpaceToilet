@@ -23,13 +23,13 @@ Then install the following packages in pip
 
 Now you can run the program:
 
--If you want to run the unpackaged script
+- If you want to run the unpackaged script
 
 ```shell
     python3 space_toilet.py
 ```
 
--If you want to run the executable provided by me in the release:
+- If you want to run the executable provided by me in the release(make sure you have the ```toilet.png``` file in the same directory as the executable):
 
 ```shell
     sudo chmod +x space_toilet
